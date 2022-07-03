@@ -41,6 +41,7 @@ class ReqResUserTableViewController: UIViewController, UITableViewDelegate, UITa
     }
   }
   
+  // data soruce methods
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     if let cell = tableView.dequeueReusableCell(withIdentifier: REQ_USER_CELL_REUSE_ID) as? ReqResUserTableViewCell {
       cell.update(user: viewModel.users[indexPath.row])
@@ -56,6 +57,15 @@ class ReqResUserTableViewController: UIViewController, UITableViewDelegate, UITa
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     return REQ_USER_CELL_HOW_HEIGHT
+  }
+  
+  // delegate methods
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    let user = viewModel.users[indexPath.row]
+    // self.navigationController?.pushViewController(, animated: true)
+    let detailVC = ReqResUserDetailViewController(user:user)
+    detailVC.view.backgroundColor = .white
+    self.navigationController?.pushViewController(detailVC, animated: true)
   }
   
   private func setupTableView() {

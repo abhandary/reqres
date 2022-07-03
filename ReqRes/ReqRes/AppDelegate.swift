@@ -16,7 +16,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Override point for customization after application launch.
     window = UIWindow(frame: UIScreen.main.bounds)
     let viewModel = ReqResUsersViewModel(networkLoader: ReqResNetworkLoader(), dataStorage: ReqResDataStore())
-    window?.rootViewController = ReqResUserTableViewController(viewModel: viewModel)
+    let tableViewController = ReqResUserTableViewController(viewModel: viewModel)
+    let navController =  ReqResListNavigationController()
+    navController.viewControllers = [tableViewController]
+    window?.rootViewController = navController
     window?.makeKeyAndVisible()
     return true
   }

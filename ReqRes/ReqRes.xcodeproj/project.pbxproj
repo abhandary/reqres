@@ -25,6 +25,8 @@
 		4E61AB7D286F870C00C24248 /* ReqResDataStoreProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E61AB7C286F870C00C24248 /* ReqResDataStoreProtocol.swift */; };
 		4E61AB7F286F912100C24248 /* ReqResImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E61AB7E286F912100C24248 /* ReqResImageLoader.swift */; };
 		4E61AB812870D14100C24248 /* ReqResUserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E61AB802870D14100C24248 /* ReqResUserDetailViewController.swift */; };
+		4E61AB832870FD4300C24248 /* ReqResListNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E61AB822870FD4300C24248 /* ReqResListNavigationController.swift */; };
+		4E61AB86287112C700C24248 /* UIColor+random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E61AB85287112C700C24248 /* UIColor+random.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +69,8 @@
 		4E61AB7C286F870C00C24248 /* ReqResDataStoreProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReqResDataStoreProtocol.swift; sourceTree = "<group>"; };
 		4E61AB7E286F912100C24248 /* ReqResImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReqResImageLoader.swift; sourceTree = "<group>"; };
 		4E61AB802870D14100C24248 /* ReqResUserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReqResUserDetailViewController.swift; sourceTree = "<group>"; };
+		4E61AB822870FD4300C24248 /* ReqResListNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReqResListNavigationController.swift; sourceTree = "<group>"; };
+		4E61AB85287112C700C24248 /* UIColor+random.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+random.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +121,7 @@
 		4E61AB35286F756700C24248 /* ReqRes */ = {
 			isa = PBXGroup;
 			children = (
+				4E61AB842871128000C24248 /* Utils */,
 				4E61AB73286F814F00C24248 /* Service */,
 				4E61AB68286F776400C24248 /* ViewModel */,
 				4E61AB67286F775900C24248 /* Model */,
@@ -152,6 +157,7 @@
 				4E61AB69286F779300C24248 /* ReqResUserTableViewCell.swift */,
 				4E61AB3A286F756700C24248 /* ReqResUserTableViewController.swift */,
 				4E61AB802870D14100C24248 /* ReqResUserDetailViewController.swift */,
+				4E61AB822870FD4300C24248 /* ReqResListNavigationController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -184,6 +190,14 @@
 				4E61AB7E286F912100C24248 /* ReqResImageLoader.swift */,
 			);
 			path = Service;
+			sourceTree = "<group>";
+		};
+		4E61AB842871128000C24248 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				4E61AB85287112C700C24248 /* UIColor+random.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -317,6 +331,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4E61AB6E286F7EEC00C24248 /* ReqResUser.swift in Sources */,
+				4E61AB86287112C700C24248 /* UIColor+random.swift in Sources */,
 				4E61AB6A286F779300C24248 /* ReqResUserTableViewCell.swift in Sources */,
 				4E61AB6C286F7EC100C24248 /* ReqResUsersViewModel.swift in Sources */,
 				4E61AB3B286F756700C24248 /* ReqResUserTableViewController.swift in Sources */,
@@ -329,6 +344,7 @@
 				4E61AB75286F817F00C24248 /* ReqResNetworkLoader.swift in Sources */,
 				4E61AB812870D14100C24248 /* ReqResUserDetailViewController.swift in Sources */,
 				4E61AB7D286F870C00C24248 /* ReqResDataStoreProtocol.swift in Sources */,
+				4E61AB832870FD4300C24248 /* ReqResListNavigationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
