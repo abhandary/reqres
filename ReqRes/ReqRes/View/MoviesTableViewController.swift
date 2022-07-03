@@ -126,8 +126,6 @@ extension MoviesTableViewController
       cell.update(movie: model)
       return cell
     }
-    
-    self.tableView.dataSource = viewModel.diffableDataSource
   }
 }
 

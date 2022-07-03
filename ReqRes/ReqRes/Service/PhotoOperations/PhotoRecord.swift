@@ -1,6 +1,6 @@
 //
 //  PhotoRecord.swift
-//  ReqRes
+//  IMDB Movies
 //
 //  Created by Akshay Bhandary on 7/2/22.
 //

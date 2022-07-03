@@ -78,6 +78,8 @@ class MovieDetailViewController: UIViewController {
     if let url = URL(string: urlString) {
       do {
         movieImage.image = try UIImage(data: Data(contentsOf: url))
+        movieImage.layer.cornerRadius = 10.0
+        movieImage.clipsToBounds = true
       } catch {
         print(error)
       }

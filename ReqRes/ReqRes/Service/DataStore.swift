@@ -33,7 +33,7 @@ actor DataStore: DataStoreProtocol {
       let savedData = try Data(contentsOf: fileURL)
       let savedResponse
           = try decoder.decode(Response.self, from: savedData)
-      print("###### saved resonse users - \(savedResponse.movies)")
+      print("###### got saved movies")
       return savedResponse.movies
     } catch {
       print("Couldn't read file. - \(error)")
