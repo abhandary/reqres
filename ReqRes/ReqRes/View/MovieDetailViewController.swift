@@ -1,6 +1,6 @@
 //
-//  ReqResUserDetailViewController.swift
-//  ReqRes
+//  MovieDetailViewController.swift
+//  IMDB Movies
 //
 //  Created by Akshay Bhandary on 7/2/22.
 //
@@ -8,22 +8,22 @@
 import Foundation
 import UIKit
 
-class ReqResUserDetailViewController: UIViewController {
+class MovieDetailViewController: UIViewController {
   
-  var user: ReqResUser!
+  var movie: Movie!
   let stackView: UIStackView!
   
-  let profilePic = UIImageView()
+  let movieImage = UIImageView()
   
-  init(user: ReqResUser) {
-    self.user = user
+  init(movie: Movie) {
+    self.movie = movie
     stackView = UIStackView()
     super.init(nibName: nil, bundle: nil)
   }
 
   override func viewDidLoad() {
     
-    setProfileImage(urlString: user.avatar)
+    setMovieImage(urlString: movie.image)
 
     // setup stack views
     stackView.axis = .vertical
@@ -31,10 +31,9 @@ class ReqResUserDetailViewController: UIViewController {
     stackView.alignment = .fill
     stackView.spacing = 50
     
-    stackView.addArrangedSubview(getProfilePicHostingView())
-    stackView.addArrangedSubview(getHozintalStackView(staticPrefix: "First Name:", labelString: user.firstName))
-    stackView.addArrangedSubview(getHozintalStackView(staticPrefix: "Last Name:", labelString: user.lastName))
-    stackView.addArrangedSubview(getHozintalStackView(staticPrefix: "Email:", labelString: user.email))
+    stackView.addArrangedSubview(movieImage)
+    stackView.addArrangedSubview(getHozintalStackView(staticPrefix: "Title:", labelString: movie.title))
+    stackView.addArrangedSubview(getHozintalStackView(staticPrefix: "Description", labelString: movie.resultDescription))
     
     self.view.addSubview(stackView)
     stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -75,23 +74,14 @@ class ReqResUserDetailViewController: UIViewController {
     return hStackView
   }
   
-  private func setProfileImage(urlString: String) {
+  private func setMovieImage(urlString: String) {
     if let url = URL(string: urlString) {
       do {
-        profilePic.image = try UIImage(data: Data(contentsOf: url))
+        movieImage.image = try UIImage(data: Data(contentsOf: url))
       } catch {
         print(error)
       }
     }
-  }
-  
-  private func getProfilePicHostingView() -> UIView {
-    let verticalStackView = UIStackView()
-    verticalStackView.axis = .vertical
-    verticalStackView.alignment = .fill
-    verticalStackView.distribution = .fill
-    verticalStackView.addArrangedSubview(profilePic)
-    return profilePic
   }
   
   private func getConstraints() -> [NSLayoutConstraint] {
@@ -99,7 +89,7 @@ class ReqResUserDetailViewController: UIViewController {
       stackView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
       stackView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
       stackView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
-      profilePic.widthAnchor.constraint(equalTo: profilePic.heightAnchor),
+      movieImage.widthAnchor.constraint(equalTo: movieImage.heightAnchor),
     ]
   }
   
