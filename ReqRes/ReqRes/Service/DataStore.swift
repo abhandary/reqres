@@ -9,7 +9,9 @@ import Foundation
 
 private let STORED_SEARCH_RESULTS_LIMIT = 100
 
-actor DataStore: DataStoreProtocol {
+private let TAG = "DataStore"
+
+struct DataStore: DataStoreProtocol {
   
   let encoder = PropertyListEncoder()
   let decoder = PropertyListDecoder()
@@ -21,7 +23,7 @@ actor DataStore: DataStoreProtocol {
   func fetchMovies(usingSearchString searchString: String) async -> [Movie]? {
     
     guard let fileURL = getFileURL(usingSearchString: searchString) else {
-      print("error: unable to get file URL")
+      Log.error(TAG, "error: unable to get file URL")
       return nil
     }
     
@@ -33,10 +35,10 @@ actor DataStore: DataStoreProtocol {
       let savedData = try Data(contentsOf: fileURL)
       let savedResponse
           = try decoder.decode(Response.self, from: savedData)
-      print("###### got saved movies")
+      Log.verbose(TAG, "got saved movies")
       return savedResponse.movies
     } catch {
-      print("Couldn't read file. - \(error)")
+      Log.error(TAG, "Couldn't read file. - \(error)")
     }
     return nil
   }
@@ -44,16 +46,16 @@ actor DataStore: DataStoreProtocol {
   func write(response: Response, usingSearchString searchString: String) async {
     
     guard let fileURL = getFileURL(usingSearchString: searchString) else {
-      print("error: unable to get file URL")
+      Log.error(TAG, "error: unable to get file URL")
       return
     }
     
     do {
       let data = try encoder.encode(response)
       try data.write(to: fileURL)
-      print("Succesfully wrote to \(fileURL)")
+      Log.verbose(TAG, "Succesfully wrote to \(fileURL)")
     } catch {
-      print(error)
+      Log.error(TAG, error)
     }
     
     deleteOldFiles()
@@ -81,11 +83,11 @@ actor DataStore: DataStoreProtocol {
           )
       for url in directoryContents {
         let creationDate = try url.resourceValues(forKeys:[.creationDateKey])
-        print("\(url) creationDate = \(creationDate)")
+        Log.verbose(TAG, "\(url) creationDate = \(creationDate)")
       }
 
     } catch {
-      print(error)
+      Log.error(TAG, error)
     }
   }
 }

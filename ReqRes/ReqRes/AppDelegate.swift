@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Override point for customization after application launch.
     window = UIWindow(frame: UIScreen.main.bounds)
     let viewModel = MoviesViewModel(networkLoader: NetworkLoader(), dataStorage: DataStore())
-    let tableViewController = MoviesTableViewController(viewModel: viewModel)
+    let tableViewController = MoviesTableViewController(viewModel: viewModel, assetStore: AssetStore())
     let navController =  ListNavigationController()
     navController.viewControllers = [tableViewController]
     window?.rootViewController = navController

@@ -8,15 +8,19 @@
 import Foundation
 import UIKit
 
-class MovieDetailViewController: UIViewController {
+private let TAG = "MovieDetailViewController"
+
+@MainActor class MovieDetailViewController: UIViewController {
   
+  var assetStore: AssetStore!
   var movie: Movie!
-  let stackView: UIStackView!
+  var stackView: UIStackView!
   
   let movieImage = UIImageView()
   
-  init(movie: Movie) {
+  init(movie: Movie, assetStore: AssetStore) {
     self.movie = movie
+    self.assetStore = assetStore
     stackView = UIStackView()
     super.init(nibName: nil, bundle: nil)
   }
@@ -37,13 +41,11 @@ class MovieDetailViewController: UIViewController {
     
     self.view.addSubview(stackView)
     stackView.translatesAutoresizingMaskIntoConstraints = false
-    debug(stackView)
     NSLayoutConstraint.activate(getConstraints())
   }
   
   
   required init?(coder: NSCoder) {
-    stackView = UIStackView()
     super.init(coder: coder)
   }
   
@@ -54,36 +56,32 @@ class MovieDetailViewController: UIViewController {
     hStackView.distribution = .fill
     hStackView.spacing = 10
     hStackView.translatesAutoresizingMaskIntoConstraints = false
-    debug(hStackView)
     
     let prefixLabel = UILabel()
     prefixLabel.translatesAutoresizingMaskIntoConstraints = false
     prefixLabel.text = staticPrefix
     prefixLabel.font = .boldSystemFont(ofSize: 20)
     prefixLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-    debug(prefixLabel)
     hStackView.addArrangedSubview(prefixLabel)
     
     let label = UILabel()
     label.text = labelString
     label.translatesAutoresizingMaskIntoConstraints = false
     label.setContentHuggingPriority(.defaultLow, for: .horizontal)
-    debug(label)
     hStackView.addArrangedSubview(label)
     
     return hStackView
   }
   
   private func setMovieImage(urlString: String) {
-    if let url = URL(string: urlString) {
-      do {
-        movieImage.image = try UIImage(data: Data(contentsOf: url))
-        movieImage.layer.cornerRadius = 10.0
-        movieImage.clipsToBounds = true
-      } catch {
-        print(error)
-      }
+    let asset = self.assetStore.fetchAsset(url: URL(string: urlString))
+    guard let data = asset.data else {
+      Log.error(TAG, "got an empty data for asset url string - \(urlString)")
+      return 
     }
+    movieImage.image = UIImage(data: data)
+    movieImage.layer.cornerRadius = 10.0
+    movieImage.clipsToBounds = true
   }
   
   private func getConstraints() -> [NSLayoutConstraint] {
@@ -93,9 +91,5 @@ class MovieDetailViewController: UIViewController {
       stackView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
       movieImage.widthAnchor.constraint(equalTo: movieImage.heightAnchor),
     ]
-  }
-  
-  private func debug(_ view: UIView) {
-    // view.backgroundColor = .random()
   }
 }

@@ -1,13 +1,13 @@
 //
-//  ReqResUITestsLaunchTests.swift
-//  ReqResUITests
+//  IMDBMoviesUITestsLaunchTests.swift
+//  IMDB Movies
 //
 //  Created by Akshay Bhandary on 7/1/22.
 //
 
 import XCTest
 
-class ReqResUITestsLaunchTests: XCTestCase {
+class IMDBMoviesUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true

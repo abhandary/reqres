@@ -8,9 +8,11 @@
 import Foundation
 import UIKit
 
-class MovieTableViewCell: UITableViewCell {
-  var nameLabel: UILabel!
+@MainActor class MovieTableViewCell: UITableViewCell {
+  var titleLabel: UILabel!
+  var descriptionLabel: UILabel!
   var movieImage: UIImageView!
+  var vStack: UIStackView!
   
   static let cellReuseIdentifier = "com.reqres.movie"
   
@@ -22,24 +24,9 @@ class MovieTableViewCell: UITableViewCell {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     
     setupProfilePic()
-    setupNameLabel()
+    setupTitleDescriptionVStack()
     
     NSLayoutConstraint.activate(staticConstraints())
-  }
-  
-  func update(movie: Movie) {
-    nameLabel.text = movie.title
-    setThumbnailImage(urlString: movie.image)
-  }
-  
-  private func setThumbnailImage(urlString: String) {
-    if let url = URL(string: urlString) {
-      do {
-        movieImage.image = try UIImage(data: Data(contentsOf: url))
-      } catch {
-        print(error)
-      }
-    }
   }
   
   private func staticConstraints() -> [NSLayoutConstraint] {
@@ -55,14 +42,10 @@ class MovieTableViewCell: UITableViewCell {
     
     // name label constraints
     constraints.append(contentsOf:[
-      nameLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 10.0),
-      nameLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10.0),
-      nameLabel.leadingAnchor.constraint(equalTo: movieImage.trailingAnchor, constant: 20.0),
-      nameLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 5.0)
-    ])
-    
-    constraints.append(contentsOf:[
-      self.heightAnchor.constraint(equalToConstant: 100.0)
+      vStack.topAnchor.constraint(equalTo: self.topAnchor, constant: 10.0),
+      vStack.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10.0),
+      vStack.leadingAnchor.constraint(equalTo: movieImage.trailingAnchor, constant: 20.0),
+      vStack.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 5.0)
     ])
     
     return constraints
@@ -83,10 +66,26 @@ class MovieTableViewCell: UITableViewCell {
     self.addSubview(movieImage)
   }
   
-  private func setupNameLabel() {
-    nameLabel = UILabel()
-    nameLabel.translatesAutoresizingMaskIntoConstraints = false
+  private func setupTitleDescriptionVStack() {
+    
+    vStack = UIStackView()
+    vStack.axis = .vertical
+    vStack.distribution = .fill
+    vStack.alignment = .fill
+  //  vStack.backgroundColor = UIColor.random()
+    vStack.translatesAutoresizingMaskIntoConstraints = false
+    
+    titleLabel = UILabel()
+    titleLabel.translatesAutoresizingMaskIntoConstraints = false
+    titleLabel.font = UIFont.boldSystemFont(ofSize: 18)
+  //  titleLabel.backgroundColor = UIColor.random()
+    vStack.addArrangedSubview(titleLabel)
+    
+    descriptionLabel = UILabel()
+    descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+    descriptionLabel.textColor = UIColor.darkGray
+    vStack.addArrangedSubview(descriptionLabel)
 
-    self.addSubview(nameLabel)
+    self.addSubview(vStack)
   }
 }

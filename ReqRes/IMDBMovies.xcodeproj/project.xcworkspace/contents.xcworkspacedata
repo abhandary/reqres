@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/akshaybhandary/github_code/reqres/ReqRes/Movies.xcodeproj">
+      location = "self:/Users/akshaybhandary/github_code/reqres/ReqRes/IMDBMovies.xcodeproj">
    </FileRef>
 </Workspace>

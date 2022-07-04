@@ -9,13 +9,18 @@ import Foundation
 import UIKit
 import Combine
 
+private let TAG = "MoviesViewModel"
+
 class MoviesViewModel {
   
   var cancellables: Set<AnyCancellable> = []
   var networkLoader: NetworkLoaderProtocol!
   var dataStorage: DataStoreProtocol!
   
-  var diffableDataSource: MoviesTableViewDiffableDataSource!
+  @MainActor var movies:[Movie] = []
+  @Published @MainActor var searchString: String = ""
+  
+  var diffableDataSource: UITableViewDiffableDataSource<MoviesTableSection, Movie.ID>?
   
   init(networkLoader: NetworkLoaderProtocol,
        dataStorage: DataStoreProtocol) {
@@ -23,59 +28,65 @@ class MoviesViewModel {
     self.dataStorage = dataStorage
     
     $searchString
-               .receive(on: RunLoop.main)
-               .debounce(for: .seconds(0.5), scheduler: RunLoop.main)
-               .sink { keywords in self.fetchMovies(keywords: keywords)
-               }.store(in: &cancellables)
+      .receive(on: RunLoop.main)
+      .debounce(for: .seconds(0.5), scheduler: RunLoop.main)
+      .sink { keywords in self.queryForMovies(keywords: keywords)
+      }.store(in: &cancellables)
   }
   
-  @Published var searchString: String = ""
+  @MainActor func fetchByID(id: String) -> Movie? {
+    return self.movies.first { $0.id == id }
+  }
   
-  @Published @MainActor var movies: [Movie] = []
-  @Published @MainActor var photos: [PhotoRecord] = []
-  
-  func fetchMovies(keywords: String) {
-    async {
-      await fetchMoviesAsync(keywords: keywords)
+  func setMovieItemNeedsUpdate(id: String) {
+    Task.detached {
+      await self.setMovieItemNeedsUpdateAsync(id:id)
     }
   }
   
-  func fetchMoviesAsync(keywords: String) async {
+  private func setMovieItemNeedsUpdateAsync(id: String) async {
+    if var snapshot = self.diffableDataSource?.snapshot() {
+      snapshot.reconfigureItems([id])
+      await self.diffableDataSource?.apply(snapshot, animatingDifferences: true)
+    }
+  }
+  
+  func queryForMovies(keywords: String) {
+    Task.detached { [weak self] in
+      await self?.queryForMoviesAsync(keywords: keywords)
+    }
+  }
+  
+  func queryForMoviesAsync(keywords: String) async {
     
     // fetch from data store if present
-    await fetchFromDataStoreAndUpdate(keywords: keywords)
-
-    print("running query for keywords - \(keywords)")
+    await queryFromDataStoreAndUpdate(keywords: keywords)
+    
+    Log.verbose(TAG,"running query for keywords - \(keywords)")
+    
     // async fetch from network and update and notify
     if let response = await networkLoader.queryForMovies(usingSearchString: searchString) {
-      print("###### writing network response to data store")
+      Log.verbose(TAG,"writing network response to data store")
       await dataStorage.write(response: response, usingSearchString: keywords)
-      await fetchFromDataStoreAndUpdate(keywords: keywords)
+      await queryFromDataStoreAndUpdate(keywords: keywords)
     } else {
-      print("##### got back an empty response")
+      Log.error(TAG,"got back empty response for keywords - \(keywords)")
     }
   }
   
-  private func fetchFromDataStoreAndUpdate(keywords: String) async {
-    print("###### fetchFromDataStoreAndUpdate")
-    var snapshot = NSDiffableDataSourceSnapshot<String?, Movie>()
-    snapshot.appendSections([""])
+  private func queryFromDataStoreAndUpdate(keywords: String) async {
+    
+    Log.verbose(TAG, "querying data store and updating for keywords - \(keywords)")
+    
     if let movies = await dataStorage.fetchMovies(usingSearchString: keywords) {
       await MainActor.run {
         self.movies = movies
       }
-      snapshot.appendItems(movies, toSection: "")
-    }
-    await self.diffableDataSource.apply(snapshot, animatingDifferences: true)
-  }
-  
-  /*
-  @MainActor private func updatePhotos() {
-    self.photos = self.users.map {
-      PhotoRecord(url: URL(string: $0.avatar),
-                  state: .new,
-                  image: UIImage(named: "Placeholder"))
+      var snapshot = NSDiffableDataSourceSnapshot<MoviesTableSection, Movie.ID>()
+      snapshot.appendSections([.main])
+      let movieIDs = movies.map { $0.id }
+      snapshot.appendItems(movieIDs, toSection:.main)
+      await self.diffableDataSource?.apply(snapshot, animatingDifferences: true)
     }
   }
-   */
 }

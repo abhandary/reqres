@@ -8,6 +8,5 @@
 import Foundation
 import UIKit
 
-class MoviesTableViewDiffableDataSource: UITableViewDiffableDataSource<String?, Movie> {
-  
+class MoviesTableViewDiffableDataSource:  {
 }

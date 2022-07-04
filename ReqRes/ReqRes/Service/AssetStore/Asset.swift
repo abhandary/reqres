@@ -9,18 +9,18 @@ import Foundation
 import UIKit
 
 // This enum contains all the possible states a photo record can be in
-enum PhotoRecordState {
-  case new, downloaded, filtered, failed
+enum AssetState {
+  case placeholder, downloaded, failed
 }
 
-struct PhotoRecord {
+struct Asset {
   let url: URL?
-  let state: PhotoRecordState
-  let image: UIImage?
+  let state: AssetState
+  let data: Data?
   
-  init(url:URL?, state: PhotoRecordState, image: UIImage?) {
+  init(url:URL?, state: AssetState, data: Data?) {
     self.url = url
     self.state = state
-    self.image = image
+    self.data = data
   }
 }

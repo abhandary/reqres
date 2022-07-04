@@ -1,6 +1,6 @@
 //
-//  ReqResTests.swift
-//  ReqResTests
+//  IMDBMoviesTests.swift
+//  IMDB Movies
 //
 //  Created by Akshay Bhandary on 7/1/22.
 //
@@ -8,7 +8,7 @@
 import XCTest
 @testable import ReqRes
 
-class ReqResTests: XCTestCase {
+class IMDBMoviesTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.

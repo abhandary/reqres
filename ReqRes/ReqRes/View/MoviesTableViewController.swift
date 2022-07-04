@@ -9,8 +9,9 @@ import UIKit
 import Combine
 
 private let REQ_USER_CELL_HOW_HEIGHT = 100.0
+private let TAG = "MoviesTableViewController"
 
-class MoviesTableViewController: UIViewController {
+@MainActor class MoviesTableViewController: UIViewController  {
   
   @Published var keyStroke: String = ""
   var cancellables: Set<AnyCancellable> = []
@@ -18,9 +19,11 @@ class MoviesTableViewController: UIViewController {
   let searchBar: UISearchBar!
   let tableView: UITableView!
   let viewModel: MoviesViewModel!
+  let assetStore: AssetStore!
   
-  init(viewModel: MoviesViewModel) {
+  init(viewModel: MoviesViewModel, assetStore: AssetStore) {
     self.viewModel = viewModel
+    self.assetStore = assetStore
     self.tableView = UITableView()
     self.searchBar = UISearchBar()
     super.init(nibName: nil, bundle: nil)
@@ -37,6 +40,7 @@ class MoviesTableViewController: UIViewController {
     setupSearchBar()
     setupTableView()
     setupObservers()
+    setupTableViewDataSource()
     
     NSLayoutConstraint.activate(staticConstraints())
   }
@@ -70,7 +74,7 @@ extension MoviesTableViewController: UITableViewDelegate {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     print(indexPath)
     let movie = viewModel.movies[indexPath.row]
-    let detailVC = MovieDetailViewController(movie:movie)
+    let detailVC = MovieDetailViewController(movie:movie, assetStore: self.assetStore)
     detailVC.view.backgroundColor = .white
     self.navigationController?.pushViewController(detailVC, animated: true)
   }
@@ -79,6 +83,7 @@ extension MoviesTableViewController: UITableViewDelegate {
     self.tableView.delegate = self
     self.tableView.register(MovieTableViewCell.self,
                             forCellReuseIdentifier: MovieTableViewCell.cellReuseIdentifier)
+    self.tableView.rowHeight = 100.0
     self.tableView.translatesAutoresizingMaskIntoConstraints = false
     self.view.addSubview(self.tableView)
   }
@@ -86,6 +91,7 @@ extension MoviesTableViewController: UITableViewDelegate {
   private func setupSearchBar() {
     self.searchBar.delegate = self
     self.searchBar.translatesAutoresizingMaskIntoConstraints = false
+    self.searchBar.prompt = "Enter a movie name to search"
     self.view.addSubview(searchBar)
   }
 }
@@ -103,7 +109,58 @@ extension MoviesTableViewController: UISearchBarDelegate
   }
 }
 
-//MARK: - Observers
+// MARK: - table view data source
+extension MoviesTableViewController
+{
+  func setupTableViewDataSource() {
+    
+    // diffable datasource
+    viewModel.diffableDataSource
+    = UITableViewDiffableDataSource<MoviesTableSection, Movie.ID>(tableView: tableView) {
+        (tableView, indexPath, movieID) -> UITableViewCell? in
+      let movie = self.viewModel.fetchByID(id: movieID)
+      guard let movie = movie else {
+        Log.error("unable to find movie object that matches id - \(movieID)")
+        return UITableViewCell()
+      }
+      guard
+        let cell = tableView.dequeueReusableCell(withIdentifier: MovieTableViewCell.cellReuseIdentifier, for: indexPath) as? MovieTableViewCell
+      else {
+        Log.error(TAG, "unable to dequeue cell")
+        return UITableViewCell()
+      }
+      
+      self.setup(cell, withMovie: movie)
+      
+      return cell
+    }
+  }
+  
+  private func setup(_ cell: MovieTableViewCell, withMovie movie: Movie) {
+    let movieImageURL = URL(string: movie.image)
+    if movieImageURL == nil {
+      Log.error(TAG, "couldn't get URL for movie url string - \(movie.image)")
+      // non fatal error, continue with showing a placeholder
+    }
+    let asset = self.assetStore.fetchAsset(url: movieImageURL)
+    cell.titleLabel.text = movie.title
+    cell.descriptionLabel.text = movie.resultDescription
+    if asset.state == .placeholder {
+      cell.movieImage.image = UIImage(named: "Placeholder")
+      self.assetStore.downloadAsset(url: movieImageURL) { [weak self] asset in
+        // reconfigure the item instead of the cell directly as the cell may
+        // have been re-used at this point
+        self?.viewModel.setMovieItemNeedsUpdate(id: movie.id)
+      }
+    } else if let imageData = asset.data {
+      cell.movieImage.image = UIImage(data: imageData)
+    }
+  }
+}
+
+
+
+//MARK: - Search bar text observer
 extension MoviesTableViewController
 {
   func setupObservers()
@@ -115,17 +172,6 @@ extension MoviesTableViewController
         print(keywords)
         self.viewModel.searchString = keywords
       }.store(in: &cancellables)
-    
-    // diffable datasource
-    viewModel.diffableDataSource = MoviesTableViewDiffableDataSource(tableView: tableView) { (tableView, indexPath, model) -> UITableViewCell? in
-      
-      guard
-        let cell = tableView.dequeueReusableCell(withIdentifier: MovieTableViewCell.cellReuseIdentifier, for: indexPath) as? MovieTableViewCell
-      else { return UITableViewCell() }
-      
-      cell.update(movie: model)
-      return cell
-    }
   }
 }
 

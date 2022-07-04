@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Movie: Codable, Hashable {
+struct Movie: Codable, Identifiable, Sendable {
   let id, resultType: String
   let image: String
   let title, resultDescription: String
@@ -15,13 +15,5 @@ struct Movie: Codable, Hashable {
   enum CodingKeys: String, CodingKey {
     case id, resultType, image, title
     case resultDescription = "description"
-  }
-  
-  func hash(into hasher: inout Hasher) {
-    hasher.combine(id)
-  }
-  
-  public static func == (lhs: Movie, rhs: Movie) -> Bool {
-    return lhs.id == rhs.id
   }
 }
