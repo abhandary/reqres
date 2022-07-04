@@ -18,9 +18,8 @@ class MoviesViewModel {
   var dataStorage: DataStoreProtocol!
   
   @MainActor var movies:[Movie] = []
+  @MainActor var diffableDataSource: UITableViewDiffableDataSource<MoviesTableSection, Movie.ID>?
   @Published @MainActor var searchString: String = ""
-  
-  var diffableDataSource: UITableViewDiffableDataSource<MoviesTableSection, Movie.ID>?
   
   init(networkLoader: NetworkLoaderProtocol,
        dataStorage: DataStoreProtocol) {
@@ -45,7 +44,7 @@ class MoviesViewModel {
   }
   
   private func setMovieItemNeedsUpdateAsync(id: String) async {
-    if var snapshot = self.diffableDataSource?.snapshot() {
+    if var snapshot = await self.diffableDataSource?.snapshot() {
       snapshot.reconfigureItems([id])
       await self.diffableDataSource?.apply(snapshot, animatingDifferences: true)
     }
