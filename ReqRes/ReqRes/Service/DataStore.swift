@@ -7,11 +7,11 @@
 
 import Foundation
 
-private let STORED_SEARCH_RESULTS_LIMIT = 100
-
 private let TAG = "DataStore"
 
 struct DataStore: DataStoreProtocol {
+  
+  static private let storedSearchResultsLimit = 100
   
   let encoder = PropertyListEncoder()
   let decoder = PropertyListDecoder()
@@ -34,7 +34,7 @@ struct DataStore: DataStoreProtocol {
       }
       let savedData = try Data(contentsOf: fileURL)
       let savedResponse
-          = try decoder.decode(Response.self, from: savedData)
+      = try decoder.decode(Response.self, from: savedData)
       Log.verbose(TAG, "got saved movies")
       return savedResponse.movies
     } catch {
@@ -78,14 +78,33 @@ struct DataStore: DataStoreProtocol {
     guard let directoryURL = fileURLs.first else { return }
     do {
       let directoryContents = try FileManager.default.contentsOfDirectory(
-              at: directoryURL,
-              includingPropertiesForKeys: [.creationDateKey]
-          )
+        at: directoryURL,
+        includingPropertiesForKeys: [.creationDateKey]
+      )
+      
       for url in directoryContents {
         let creationDate = try url.resourceValues(forKeys:[.creationDateKey])
         Log.verbose(TAG, "\(url) creationDate = \(creationDate)")
       }
+      
+      
+      var sortedDirectoryContents = directoryContents.sorted {
+        do {
+          if let creationDateFirst = try $0.resourceValues(forKeys:[.creationDateKey]).allValues[.creationDateKey] as? Date,
+             let creationDateSecond = try $1.resourceValues(forKeys:[.creationDateKey]).allValues[.creationDateKey] as? Date {
+            return creationDateFirst > creationDateSecond
+          }
+        } catch {
+          Log.error(TAG, "getting creation dates failed")
+        }
+        Log.error(TAG, "unable to get creation dates")
+        return false
+      }
 
+      while sortedDirectoryContents.count > DataStore.storedSearchResultsLimit {
+        let removed = sortedDirectoryContents.removeLast()
+        try FileManager.default.removeItem(at: removed)
+      }
     } catch {
       Log.error(TAG, error)
     }
