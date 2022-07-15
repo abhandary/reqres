@@ -17,6 +17,8 @@ class MoviesViewModel {
   var networkLoader: NetworkLoaderProtocol!
   var dataStorage: DataStoreProtocol!
   
+  var queryTask: Task<Optional<()>, Never>?
+  
   @MainActor var movies:[Movie] = []
   @MainActor var diffableDataSource: UITableViewDiffableDataSource<MoviesTableSection, Movie.ID>?
   @Published @MainActor var searchString: String = ""
@@ -51,7 +53,8 @@ class MoviesViewModel {
   }
   
   func queryForMovies(keywords: String) {
-    Task.detached { [weak self] in
+    queryTask?.cancel()
+    queryTask = Task.detached { [weak self] in
       await self?.queryForMoviesAsync(keywords: keywords)
     }
   }
@@ -64,7 +67,7 @@ class MoviesViewModel {
     Log.verbose(TAG,"running query for keywords - \(keywords)")
     
     // async fetch from network and update and notify
-    if let response = await networkLoader.queryForMovies(usingSearchString: searchString) {
+    if let response = await networkLoader.queryForMovies(usingSearchString: keywords) {
       Log.verbose(TAG,"writing network response to data store")
       await dataStorage.write(response: response, usingSearchString: keywords)
       await queryFromDataStoreAndUpdate(keywords: keywords)

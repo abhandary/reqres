@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Response: Codable {
+struct Response: Codable, Sendable {
     let searchType, expression: String
     let movies: [Movie]
     let errorMessage: String
