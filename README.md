@@ -25,7 +25,7 @@ App has the following features
 
 Here's a walkthrough of implemented user stories:
 
-<img src='https://github.com/abhandary/reqres/imdb_movies.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://github.com/abhandary/reqres/blob/main/imdb_movies.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 
 ## License
