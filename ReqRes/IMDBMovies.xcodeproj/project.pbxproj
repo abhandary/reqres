@@ -29,6 +29,7 @@
 		4E61AB9128728EEC00C24248 /* MoviesTableSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E61AB9028728EEC00C24248 /* MoviesTableSection.swift */; };
 		4E61AB93287292A800C24248 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E61AB92287292A800C24248 /* Log.swift */; };
 		4E61AB952872AF8600C24248 /* AssetStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E61AB942872AF8600C24248 /* AssetStore.swift */; };
+		4EBFE91D28CC531400FDCFDA /* MovieTableViewAltCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EBFE91C28CC531400FDCFDA /* MovieTableViewAltCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +76,7 @@
 		4E61AB9028728EEC00C24248 /* MoviesTableSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesTableSection.swift; sourceTree = "<group>"; };
 		4E61AB92287292A800C24248 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		4E61AB942872AF8600C24248 /* AssetStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetStore.swift; sourceTree = "<group>"; };
+		4EBFE91C28CC531400FDCFDA /* MovieTableViewAltCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieTableViewAltCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +164,7 @@
 				4E61AB3A286F756700C24248 /* MoviesTableViewController.swift */,
 				4E61AB802870D14100C24248 /* MovieDetailViewController.swift */,
 				4E61AB822870FD4300C24248 /* ListNavigationController.swift */,
+				4EBFE91C28CC531400FDCFDA /* MovieTableViewAltCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -356,6 +359,7 @@
 				4E61AB7B286F866500C24248 /* NetworkLoaderProtocol.swift in Sources */,
 				4E61AB79286F827700C24248 /* Response.swift in Sources */,
 				4E61AB75286F817F00C24248 /* NetworkLoader.swift in Sources */,
+				4EBFE91D28CC531400FDCFDA /* MovieTableViewAltCell.swift in Sources */,
 				4E61AB812870D14100C24248 /* MovieDetailViewController.swift in Sources */,
 				4E61AB7D286F870C00C24248 /* DataStoreProtocol.swift in Sources */,
 				4E61AB93287292A800C24248 /* Log.swift in Sources */,

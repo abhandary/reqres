@@ -7,7 +7,7 @@
 
 import Foundation
 
-actor NetworkLoader: NetworkLoaderProtocol {
+struct NetworkLoader: NetworkLoaderProtocol {
   
   let API_KEY = "k_6ik2kgb0"
   let endpoint = "https://imdb-api.com/en/API/SearchMovie/"

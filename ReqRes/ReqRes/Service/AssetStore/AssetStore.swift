@@ -11,7 +11,7 @@ import Foundation
 private let TAG = "AssetStore"
 
 struct AssetStore {
-  
+
   var imageCache = NSCache<NSString, NSData>()
   
   func fetchAsset(url: URL?) -> Asset {
@@ -35,15 +35,18 @@ struct AssetStore {
     if let cachedAsset = imageCache.object(forKey: url.path as NSString) {
       completionHandler(Asset(url: url, state: .downloaded, data: cachedAsset as Data))
     } else {
-      Task.detached {
-        do {
-          let downloadedData = try Data(contentsOf: url)
-          imageCache.setObject(downloadedData as NSData, forKey: url.path as NSString)
-          completionHandler(Asset(url: url, state: .downloaded, data: downloadedData))
-        } catch {
+      URLSession.shared.dataTask(with: url) { (data, response, error) in
+        if let error = error {
           Log.error(TAG, error)
         }
-      }
+        guard let data = data else {
+          Log.error(TAG, "no data fetched")
+          return
+        }
+        
+        imageCache.setObject(data as NSData, forKey: url.path as NSString)
+        completionHandler(Asset(url: url, state: .downloaded, data: data))
+      }.resume()
     }
   }
 }

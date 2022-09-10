@@ -8,7 +8,7 @@
 import UIKit
 import Combine
 
-private let REQ_USER_CELL_HOW_HEIGHT = 100.0
+private let MOVIE_CELL_HOW_HEIGHT = 100.0
 private let TAG = "MoviesTableViewController"
 
 @MainActor class MoviesTableViewController: UIViewController  {
@@ -81,9 +81,9 @@ extension MoviesTableViewController: UITableViewDelegate {
   
   private func setupTableView() {
     self.tableView.delegate = self
-    self.tableView.register(MovieTableViewCell.self,
-                            forCellReuseIdentifier: MovieTableViewCell.cellReuseIdentifier)
-    self.tableView.rowHeight = 100.0
+    self.tableView.register(MovieTableViewAltCell.self,
+                            forCellReuseIdentifier: MovieTableViewAltCell.cellReuseIdentifier)
+    self.tableView.rowHeight = MOVIE_CELL_HOW_HEIGHT
     self.tableView.translatesAutoresizingMaskIntoConstraints = false
     self.view.addSubview(self.tableView)
   }
@@ -120,23 +120,21 @@ extension MoviesTableViewController
         (tableView, indexPath, movieID) -> UITableViewCell? in
       let movie = self.viewModel.fetchByID(id: movieID)
       guard let movie = movie else {
-        Log.error("unable to find movie object that matches id - \(movieID)")
-        return UITableViewCell()
+        fatalError("unable to find movie object that matches id - \(movieID)")
       }
       guard
-        let cell = tableView.dequeueReusableCell(withIdentifier: MovieTableViewCell.cellReuseIdentifier, for: indexPath) as? MovieTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: MovieTableViewAltCell.cellReuseIdentifier, for: indexPath) as? MovieTableViewAltCell
       else {
-        Log.error(TAG, "unable to dequeue cell")
-        return UITableViewCell()
+        fatalError("unable to dequeue cell")
       }
       
-      self.setup(cell, withMovie: movie)
+      cell.setup(withMovie: movie, assetStore: self.assetStore)
       
       return cell
     }
   }
   
-  private func setup(_ cell: MovieTableViewCell, withMovie movie: Movie) {
+  private func setup(_ cell: MovieTableViewAltCell, withMovie movie: Movie) {
     let movieImageURL = URL(string: movie.image)
     if movieImageURL == nil {
       Log.error(TAG, "couldn't get URL for movie url string - \(movie.image)")

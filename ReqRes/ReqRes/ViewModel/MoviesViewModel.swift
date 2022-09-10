@@ -40,7 +40,7 @@ class MoviesViewModel {
   }
   
   func setMovieItemNeedsUpdate(id: String) {
-    Task.detached {
+    Task {
       await self.setMovieItemNeedsUpdateAsync(id:id)
     }
   }
@@ -54,7 +54,7 @@ class MoviesViewModel {
   
   func queryForMovies(keywords: String) {
     queryTask?.cancel()
-    queryTask = Task.detached { [weak self] in
+    queryTask = Task { [weak self] in
       await self?.queryForMoviesAsync(keywords: keywords)
     }
   }

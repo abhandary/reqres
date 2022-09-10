@@ -11,6 +11,7 @@ struct Log {
   static func error(_ tag: String, _ message: Any...) {
     print("\(tag): Error:", message)
   }
+  
   static func verbose(_ tag: String, _ message: Any...) {
     print("\(tag): Verbose:", message)
   }
